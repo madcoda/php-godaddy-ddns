@@ -109,7 +109,7 @@ class GoDaddyDNS
      * See: http://dyn.com/support/developers/api/perform-update/
      *      http://dyn.com/support/developers/api/return-codes/
      */
-    public static function ddns($defaults = array()) {
+    public static function ddns($defaults = array(), & $error_msg = '') {
         // Merge the default request values with those passed into the function argument
         $defaults = array_merge(array(
             'username'           => '',
@@ -142,9 +142,11 @@ class GoDaddyDNS
             } else  {//($dns->_lastError == "911" || $dns->_lastError == "nohost") {
                 header('HTTP/1.1 500 Internal Server Error');
             }
-            echo $dns->_lastError;
+            $error_msg = $dns->_lastError;
+            return false;
         } else {
-          echo (($dns->_lastSuccess['last_ip'] == $dns->_lastSuccess['new_ip']) ? 'nochg' : 'good') . ' ' . $dns->_lastSuccess['new_ip'];
+          $error_msg = (($dns->_lastSuccess['last_ip'] == $dns->_lastSuccess['new_ip']) ? 'nochg' : 'good') . ' ' . $dns->_lastSuccess['new_ip'];
+          return true;
         }
     }
 
@@ -439,27 +441,3 @@ class GoDaddyDNS
     }
 }
 
-if(php_sapi_name() == "cli") {
-    if (count($argv) < 4) {
-        echo "Usage:\n ".$argv[0]." <username> <password> <hostname>\n";
-        exit(1);
-    }
-
-    $ddns = new GoDaddyDNS(array(
-    'username' => $argv[1],
-    'password' => $argv[2],
-    'hostname' => $argv[3],
-    'detect_external_ip' => true,));
-
-    if($ddns->updateRecord()) {
-        echo "Updated Record\n";
-        exit(0);
-    } else {
-        echo "Problem updating Record \"".$ddns->_lastError."\"\n";
-        exit(1);
-    }
-} else {
-    GoDaddyDNS::ddns();
-}
-
-?>
