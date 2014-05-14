@@ -122,14 +122,11 @@ class GoDaddyDNS
         ), $defaults);
 
         // Get request values from HTTP data, falling back to the defaults above
-        $defaults['username'] = isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] :
-                    (isset($_REQUEST['user']) ? $_REQUEST['user'] : $defaults['username']);
-        $defaults['password'] = isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] :
-                    (isset($_REQUEST['pw']) ? $_REQUEST['pw'] : $defaults['password']);
-        $defaults['hostname'] = isset($_REQUEST['hostname']) ? $_REQUEST['hostname'] : $defaults['hostname'];
-        $defaults['myip']     = isset($_REQUEST['myip']) ? $_REQUEST['myip'] :
-                    (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : $defaults['myip']);
-        $defaults['offline']  = isset($_REQUEST['offline']) ? (strtoupper($_REQUEST['offline']) == 'YES') : $defaults['offline'];
+        //$defaults['username'] = isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] :(isset($_REQUEST['user']) ? $_REQUEST['user'] : $defaults['username']);
+        //$defaults['password'] = isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] :(isset($_REQUEST['pw']) ? $_REQUEST['pw'] : $defaults['password']);
+        //$defaults['hostname'] = isset($_REQUEST['hostname']) ? $_REQUEST['hostname'] : $defaults['hostname'];
+        //$defaults['myip']     = isset($_REQUEST['myip']) ? $_REQUEST['myip'] :(isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : $defaults['myip']);
+        //$defaults['offline']  = isset($_REQUEST['offline']) ? (strtoupper($_REQUEST['offline']) == 'YES') : $defaults['offline'];
 
 
         $dns = new self($defaults);
