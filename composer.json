@@ -1,0 +1,10 @@
+{
+    "name": "madcoda/php-godaddy-ddns",
+    "authors": [
+        {
+            "name": "Jason Leung",
+            "email": "jason@madcoda.com"
+        }
+    ],
+    "require": {}
+}
