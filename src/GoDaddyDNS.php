@@ -216,7 +216,7 @@ class GoDaddyDNS
 
             if (!$this->isLoggedIn()) {
                 // Invalid username/password or unknown response received
-                return false;
+                throw new Exception('Invalid username/password or unknown response received');
             }
         }
         return true;
@@ -232,6 +232,7 @@ class GoDaddyDNS
             } else {
                 // An unexpected user was logged in
                 $this->logout();
+                throw new Exception('An unexpected user was logged in');
             }
         }
         return false;
@@ -266,7 +267,8 @@ class GoDaddyDNS
             case 'A':
                 if (!($record = $this->_findRecord($host, $domain, $type))) {
                     // Host record not found
-                    return false;
+                    throw new Exception('Host record not found');
+                    // return false;
                 } elseif ($record['data'] != $this->_config['myip']) {
                     // A record is out of date, build the query for updating it
                     $post = array(
