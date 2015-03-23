@@ -276,7 +276,7 @@ class GoDaddyDNS
                     );
                     $calloutResponse = $this->_fetchURL($this->_config['godaddy_dns_zonefile_ws_url'] . '/EditRecordField', http_build_query($post, '', '&'));
                     if (strpos($calloutResponse, 'SUCCESS') === false) {
-                        return false;
+                        throw new Exception('call EditRecordField failed :' . $calloutResponse);
                     }
 
                     // Commit the updates
@@ -285,7 +285,7 @@ class GoDaddyDNS
                     );
                     $calloutResponse = $this->_fetchURL($this->_config['godaddy_dns_zonefile_ws_url'] . '/SaveRecords', http_build_query($post, '', '&'));
                     if (strpos($calloutResponse, 'SUCCESS') === false) {
-                        return false;
+                        throw new Exception('call SaveRecords failed :' . $calloutResponse);
                     }
                 }
 
