@@ -270,6 +270,9 @@ class GoDaddyDNS
                     throw new Exception('Host record not found');
                     // return false;
                 } elseif ($record['data'] != $this->_config['myip']) {
+
+                    $nonce = $this->_getNonce();
+
                     // A record is out of date, build the query for updating it
                     $post = array(
                         'sInput' => '<PARAMS><PARAM name="type" value="arecord" /><PARAM name="fieldName" value="data" /><PARAM name="fieldValue" value="' . $this->_config['myip'] . '" /><PARAM name="lstIndex" value="' . $record['index'] . '" /></PARAMS>',
@@ -280,8 +283,30 @@ class GoDaddyDNS
                     }
 
                     // Commit the updates
+                    $sInput = $this->_constructXML(array(
+                        'domainName' => $domain,
+                        'zoneType' => '0',
+                        'aRecEditCount' => '1',
+                        'aRecDeleteCount' => '0',
+                        'aRecEdit0Index' => $record['index'],
+                        'cnameRecEditCount' => '0',
+                        'cnameRecDeleteCount' => '0',
+                        'mxRecEditCount' => '0',
+                        'mxRecDeleteCount' => '0',
+                        'txtRecEditCount' => '0',
+                        'txtRecDeleteCount' => '0',
+                        'srvRecEditCount' => '0',
+                        'srvRecDeleteCount' => '0',
+                        'aaaaRecEditCount' => '0',
+                        'aaaaRecDeleteCount' => '0',
+                        'soaRecEditCount' => '0',
+                        'soaRecDeleteCount' => '0',
+                        'nsRecEditCount' => '0',
+                        'nsRecDeleteCount' => '0',
+                        'nonce' => $nonce
+                    ));
                     $post = array(
-                        'sInput' => '<PARAMS><PARAM name="domainName" value="' . $domain . '" /><PARAM name="zoneType" value="0" /><PARAM name="aRecEditCount" value="1" /><PARAM name="aRecDeleteCount" value="0" /><PARAM name="aRecEdit0Index" value="' . $record['index'] . '" /><PARAM name="cnameRecEditCount" value="0" /><PARAM name="cnameRecDeleteCount" value="0" /><PARAM name="mxRecEditCount" value="0" /><PARAM name="mxRecDeleteCount" value="0" /><PARAM name="txtRecEditCount" value="0" /><PARAM name="txtRecDeleteCount" value="0" /><PARAM name="srvRecEditCount" value="0" /><PARAM name="srvRecDeleteCount" value="0" /><PARAM name="aaaaRecEditCount" value="0" /><PARAM name="aaaaRecDeleteCount" value="0" /><PARAM name="soaRecEditCount" value="0" /><PARAM name="soaRecDeleteCount" value="0" /><PARAM name="nsRecEditCount" value="0" /><PARAM name="nsRecDeleteCount" value="0" /></PARAMS>',
+                        'sInput' => $sInput
                     );
                     $calloutResponse = $this->_fetchURL($this->_config['godaddy_dns_zonefile_ws_url'] . '/SaveRecords', http_build_query($post, '', '&'));
                     if (strpos($calloutResponse, 'SUCCESS') === false) {
@@ -437,6 +462,26 @@ class GoDaddyDNS
             return $match[1];
         }
         return false;
+    }
+
+    private function _constructXML($params){
+        $xml = '<PARAMS>';
+        foreach($params as $name => $value){
+            $xml .= '<PARAM name="' . $name . '" value="'. $value .'" />';
+        }
+        $xml .= '</PARAMS>'
+        return $xml;
+    }
+
+
+    private function _getNonce(){
+        
+        if( preg_match("/nonce=\"(\w+)\";/", $this->_lastResponse, $matches) !== FALSE && 
+            preg_match("/nonce=\"(\w+)\";/", $this->_lastResponse, $matches) !== 0){
+            return $matches[1];
+        }else{
+            throw new Exception('No nonce param found in the page');
+        }
     }
 }
 
