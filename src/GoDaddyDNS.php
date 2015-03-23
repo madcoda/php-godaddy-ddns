@@ -469,7 +469,7 @@ class GoDaddyDNS
         foreach($params as $name => $value){
             $xml .= '<PARAM name="' . $name . '" value="'. $value .'" />';
         }
-        $xml .= '</PARAMS>'
+        $xml .= '</PARAMS>';
         return $xml;
     }
 
